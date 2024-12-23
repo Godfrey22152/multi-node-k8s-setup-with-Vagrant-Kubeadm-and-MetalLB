@@ -1,0 +1,23 @@
+# MetalLB IP range pool and L2 configuration file
+
+# IPAddressPool (CRD) Configuration
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: cluster-pool             # Replace with your favorite pool name
+  namespace: default             # Replace with the namespace Metallb was installed
+spec:
+  addresses:
+  - 192.168.56.100-192.168.56.129   # Replace with your IP address Pool range
+
+
+---
+# L2 Configuration
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: kubeadm-cluster         # Replace with your favorite name
+  namespace: default            # Replace with the namespace Metallb was installed
+spec:
+  ipAddressPools:
+  - cluster-pool                # Replace with your IP address Pool range name 
