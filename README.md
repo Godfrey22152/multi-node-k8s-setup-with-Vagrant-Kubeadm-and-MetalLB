@@ -53,7 +53,7 @@ cd multi-node-k8s-setup-with-Vagrant-Kubeadm-and-MetalLB.git
 ---
 ### **2. Configure Vagrant**
 
-The `[Vagrantfile](./Vagrantfile)` sets up one master and two worker nodes. Adjust the file if needed:
+The [Vagrantfile](./Vagrantfile) sets up one master and two worker nodes. Adjust the file if needed:
 ```ruby
 Vagrant.configure("3") do |config| 
     # Define the master node
@@ -94,10 +94,10 @@ Vagrant.configure("3") do |config|
 end
 ```
 #### Explanation:
-**Master Node:** Uses the private IP 192.168.56.10.
-**Worker1 Node:** Uses the private IP 192.168.56.11.
-**Worker2 Node:** Uses the private IP 192.168.56.12.
-All nodes have dual networking (private and public) for cluster communication and internet access.
+- **Master Node:** Uses the private IP 192.168.56.10.
+- **Worker1 Node:** Uses the private IP 192.168.56.11.
+- **Worker2 Node:** Uses the private IP 192.168.56.12.
+- All nodes have dual networking (private and public) for cluster communication and internet access.
 
 - **Bring up the VMs:**
 ```bash
@@ -120,7 +120,7 @@ vagrant ssh worker2
 ---
 ### **3. Automate Kubernetes Setup**
 #### Bash Script for Kubeadm Setup
-To automate the Kubeadm setup, we will use the `[setup_k8s.sh](./setup_k8s.sh)` bash script. This script simplifies configuring both master and worker nodes in a multi-node Kubernetes cluster, automating processes that are often manually executed. Kindly see my article on **[Medium](https://medium.com/@godfreyifeanyi50/setting-up-a-multi-node-kubernetes-workspace-with-vagrant-kubeadm-and-metallb-c1b51d7d394e)** for a detailed guidance for setting the cluster using the `setup_k8s.sh` bash script. 
+To automate the Kubeadm setup, we will use the **[setup_k8s.sh](./setup_k8s.sh)** bash script. This script simplifies configuring both master and worker nodes in a multi-node Kubernetes cluster, automating processes that are often manually executed. Kindly see my article on **[Medium](https://medium.com/@godfreyifeanyi50/setting-up-a-multi-node-kubernetes-workspace-with-vagrant-kubeadm-and-metallb-c1b51d7d394e)** for a detailed guidance for setting the cluster using the `setup_k8s.sh` bash script. 
 
 #### Key Features:
 The script automates several critical tasks involved in setting up a Kubernetes cluster:
@@ -166,7 +166,7 @@ sudo chmod +x setup_k8s.sh
 2. **On the worker nodes:**
 
 - **Prepare the Join Command:**
-The kubeadm join command generated during master node initialization is saved to /tmp/kubeadm_join_command.txt on the master node.
+The kubeadm join command generated during master node initialization is saved to `/tmp/kubeadm_join_command.txt` on the master node.
 Copy this file from the master node to each worker node using SCP or another secure transfer method with the file name unchanged.
 
 - **Run the Worker Node Setup:**
@@ -186,7 +186,7 @@ helm repo add metallb https://metallb.github.io/metallb
 helm repo update
 helm install metallb metallb/metallb
 ```
-Apply the MetalLB configuration **(`[metallb.yaml](./metallb.yaml)`)**:
+Apply the MetalLB configuration **[metallb.yaml](./metallb.yaml)**:
 
 ```bash
 kubectl apply -f metallb.yaml
