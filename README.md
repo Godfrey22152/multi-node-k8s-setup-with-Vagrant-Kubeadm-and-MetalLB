@@ -180,16 +180,20 @@ bash setup_k8s.sh worker
 
 ---
 ### **4. Install MetalLB**
-Install MetalLB using Helm:
+Install MetalLB using Manifest:
 ```bash
-helm repo add metallb https://metallb.github.io/metallb
-helm repo update
-helm install metallb metallb/metallb
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
 ```
-Apply the MetalLB configuration **[metallb.yaml](./metallb.yaml)**:
+
+Verify that everything is installed correctly: 
+```sh
+kubectl get pods -n metallb-system
+```
+
+Apply the MetalLB configuration **[metallb.yaml](./metallb.yaml)** that creates **IPAddressPool** and **L2Advertisement**:
 
 ```bash
-kubectl apply -f metallb.yaml
+kubectl apply -f metallb.yaml -n metallb-system
 ```
 
 ---
