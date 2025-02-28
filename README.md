@@ -211,6 +211,70 @@ Deploy a sample application with a LoadBalancer service and verify external acce
 
 ---
 
+### Install Nginx ingress controller.
+   You can find the Kubernetes NGINX documentation **[here](https://kubernetes.github.io/ingress-nginx/)**
+   First thing we do is check the compatibility matrix to ensure we are deploying a compatible version of NGINX Ingress on our Kubernetes cluster.
+
+   The Documentation also has a link to the **[GitHub Repo](https://github.com/kubernetes/ingress-nginx/)** which has a compatibility matrix.
+
+ - **Get the installation YAML**
+   The controller ships as a `helm` chart, so we can grab version `v1.11.3` as per the compatibility matrix.
+
+   From our container we can do this:
+
+   ```bash
+   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+   helm search repo ingress-nginx --versions
+   ```
+
+   From the app version we select the version that matches the compatibility matrix.
+
+   ```bash
+   NAME                            CHART VERSION   APP VERSION     DESCRIPTION
+   ingress-nginx/ingress-nginx     4.11.3          1.11.3          Ingress controller for Kubernetes using NGINX a...
+   ```
+   Now we can use helm to install the chart directly if we want.
+   Or we can use helm to grab the manifest and explore its content.
+   We can also add that manifest to our git repo if we are using a GitOps workflow to deploy it.
+
+   ```bash
+   CHART_VERSION="4.11.3"
+   APP_VERSION="1.11.3"
+
+   mkdir ./nginx-ingress-manifests
+
+   helm template nginx-ingress ingress-nginx \
+   --repo https://kubernetes.github.io/ingress-nginx \
+   --version ${CHART_VERSION} \
+   --namespace ingress-nginx \
+   --set controller.service.type=LoadBalancer \
+   > ./nginx-ingress-manifests/installation_nginx_ingress.${APP_VERSION}.yaml
+   ```
+ - **Deploy the Ingress controller**
+   ```bash
+   kubectl create namespace ingress-nginx
+   kubectl apply -f ./nginx-ingress-manifests/installation_nginx_ingress.${APP_VERSION}.yaml
+   ```
+
+ - **Check the installation**
+   ```bash
+   kubectl get pods -n ingress-nginx
+   ```
+   ```bash
+   NAME                                                          READY   STATUS    RESTARTS      AGE
+   pod/nginx-ingress-ingress-nginx-controller-6ffbff94df-td7pr   1/1     Running   0             5m
+   ```
+ - **Check the Nginx Ingress Service**
+
+   ```bash
+   kubectl get svc -n ingress-nginx
+   NAME                                               TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                      AGE
+   nginx-ingress-ingress-nginx-controller             LoadBalancer   10.105.156.69   XXXXXXXXXXXXXX   80:31507/TCP,443:31539/TCP   5m
+   nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.98.183.68    <none>           443/TCP                      5m
+   ```
+   
+---
+
 ## **Repository Contents**
 
 - **[Vagrantfile](./Vagrantfile)**: Configurations for master and worker nodes.
