@@ -126,8 +126,15 @@ setup_kubeconfig() {
 # Function to install Calico networking
 install_calico() {
   echo "Installing Calico CNI..."
-  kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml || { echo "Failed to apply Calico operator"; exit 1; }
-  curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/custom-resources.yaml -O
+  kubectl create namespace tigera-operator || true
+
+  echo "Waiting for API server to be ready..."
+  until kubectl get nodes >/dev/null 2>&1; do
+    sleep 5
+  done
+
+  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml || { echo "Failed to apply Calico operator"; exit 1; }
+  curl -LO https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/custom-resources.yaml
   kubectl apply -f custom-resources.yaml
 }
 
